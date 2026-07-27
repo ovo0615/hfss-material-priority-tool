@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HFSS Material Priority Tool - 操作說明</title>
+    <!-- 引入 Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Sans+TC:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --text-main: #f8fafc;
+            --text-muted: #cbd5e1;
+            --accent-blue: #3b82f6;
+            --accent-green: #10b981;
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Noto Sans TC', sans-serif;
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.1) 0px, transparent 50%);
+            background-attachment: fixed;
+            color: var(--text-main);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #60a5fa, #34d399);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+        }
+
+        .video-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            margin-bottom: 40px;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: #000;
+        }
+
+        video {
+            width: 100%;
+            display: block;
+            border-radius: 8px;
+        }
+
+        .instructions {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            margin-bottom: 40px;
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+        }
+
+        .instructions h2 {
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+            color: var(--accent-blue);
+            border-bottom: 2px solid rgba(59, 130, 246, 0.3);
+            padding-bottom: 10px;
+        }
+
+        .step {
+            display: flex;
+            margin-bottom: 25px;
+            align-items: flex-start;
+        }
+
+        .step-number {
+            flex-shrink: 0;
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--accent-blue), #2563eb);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-right: 20px;
+            box-shadow: 0 4px 10px rgba(59, 130, 246, 0.4);
+        }
+
+        .step-content h3 {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+            color: #e2e8f0;
+        }
+
+        .step-content p {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        .highlight {
+            color: var(--accent-green);
+            font-weight: 600;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--glass-border);
+            width: 100%;
+            animation: fadeIn 1s ease-out 0.8s both;
+        }
+
+        .attribution {
+            font-size: 0.95rem;
+            color: #94a3b8;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Comparison Table Styles */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .comparison-table th, .comparison-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .comparison-table th {
+            background: rgba(59, 130, 246, 0.2);
+            color: var(--accent-blue);
+            font-weight: 700;
+        }
+
+        .comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .vs-tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 800;
+            margin-right: 5px;
+        }
+
+        .v3-tag { background: #64748b; color: white; }
+        .v4-tag { background: var(--accent-green); color: white; }
+
+        /* Hover effects */
+        .step:hover .step-number {
+            transform: scale(1.1);
+            transition: transform 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>HFSS Material Priority Tool v4.0</h1>
+            <p class="subtitle">自動化智慧重疊解析與材料優先權分配工具</p>
+        </header>
+
+        <div class="video-card">
+            <p style="margin-bottom: 10px; font-weight: 600; color: var(--accent-blue);">操作範例影片：</p>
+            <div class="video-wrapper">
+                <video controls preload="metadata">
+                    <source src="操作範例影片.mp4" type="video/mp4">
+                    您的瀏覽器不支援 HTML5 影片標籤。
+                </video>
+            </div>
+        </div>
+
+        <div class="video-card">
+            <p style="margin-bottom: 10px; font-weight: 600; color: var(--accent-green);">v3.0 與 v4.0 效能實測比較影片：</p>
+            <div class="video-wrapper">
+                <video controls preload="metadata">
+                    <source src="HFSS Material Priority Tool v3與v4 比較.mp4" type="video/mp4">
+                    您的瀏覽器不支援 HTML5 影片標籤。
+                </video>
+            </div>
+        </div>
+
+        <div class="instructions">
+            <h2>操作步驟指南 (v4.0 智慧運算版)</h2>
+            
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h3>開啟 HFSS 專案</h3>
+                    <p>請先確保您已在 Ansys HFSS 中開啟包含重疊幾何物件的專案，並且每個物件都已正確賦予材料 (Material)。</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h3>啟動智慧版工具</h3>
+                    <p>在 HFSS 上方選單列點擊 <strong>Automation > Run Script</strong>，選擇並執行 <code class="highlight">hfss_mat_priority_tool_v4.py</code> 腳本。</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h3>連接專案與讀取材料</h3>
+                    <p>點擊工具介面上方的藍色按鈕 <span class="highlight">1. Connect to Active Design</span>。工具將會自動過濾非幾何物件，並讀取所有實體物件的材料清單。</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <h3>設定材料優先順序與管理</h3>
+                    <p>在清單中點選特定材料，除了使用 <strong>Move Up/Down</strong> 調整優先權外，v2.0 新增了以下管理功能：</p>
+                    <ul style="color: var(--text-muted); margin-left: 20px; margin-top: 10px;">
+                        <li><span class="highlight">Ignore Mat.</span>：將選中的材料從運算清單中移除（忽略不處理）。</li>
+                        <li><span class="highlight">Save Order</span>：將目前的材料優先順序儲存為 .txt 文字檔。</li>
+                        <li><span class="highlight">Load Order</span>：從文字檔讀取順序，快速套用至當前專案。</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">5</div>
+                <div class="step-content">
+                    <h3>執行智慧自動扣除</h3>
+                    <p>順序排列完成後，點擊底部的綠色按鈕 <span class="highlight">RUN SMART SUBTRACTION</span>。工具會瞬間分析所有物件的邊界框，並僅針對實際發生重疊的物件進行精準的布林運算。</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="instructions" style="margin-top: -20px; border-top: none; border-radius: 0 0 16px 16px; padding-top: 0;">
+            <h2 style="font-size: 1.4rem; color: var(--accent-green);">v4.0 技術亮點：Smart Intersection 智慧相減演算法</h2>
+            <div style="background: rgba(16, 185, 129, 0.1); padding: 15px; border-radius: 8px; border-left: 4px solid var(--accent-green); margin-bottom: 30px;">
+                <p style="font-size: 0.95rem; color: var(--text-muted);">
+                    <strong>1. 空間邊界框 (Bounding Box) 快取技術：</strong><br>
+                    在執行相減前，腳本會瞬間預先計算並快取所有物件的三維空間邊界框。<br><br>
+                    <strong>2. 解決巨量模型卡頓 (O(N*M) 效能瓶頸)：</strong><br>
+                    傳統作法會將所有選取物件混在一起丟給底層引擎計算，導致當機。V4 採用了<strong>獨立物件精準過濾</strong>機制，僅當「低優先權物件」的邊界框確實與「高優先權物件」重疊時，才對此特定組合下達 <code class="highlight">Subtract</code> 指令。<br><br>
+                    <strong>3. 保持乾淨的建模歷史：</strong><br>
+                    完全避免在未重疊的物件上留下無用的布林函數紀錄，使 HFSS 歷史樹狀圖保持極度精簡，大幅提升存檔與後續編輯的流暢度。
+                </p>
+            </div>
+
+            <h2 style="font-size: 1.4rem; color: var(--accent-blue);">版本效能對比：v3.0 vs v4.0</h2>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>特性</th>
+                        <th>v3.0 (穩定版)</th>
+                        <th>v4.0 (智慧運算版)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>運算邏輯</strong></td>
+                        <td>批次處理 (全部材料物件同時運算)</td>
+                        <td>精準過濾 (僅運算具空間重疊的物件)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>執行效能</strong></td>
+                        <td>普通 (物件多時會造成系統卡頓)</td>
+                        <td>極速 (無視物件多寡，僅處理重疊處)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>建模歷史樹</strong></td>
+                        <td>較凌亂 (包含大量無效布林紀錄)</td>
+                        <td>極度簡潔 (僅保留必要的相減紀錄)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>系統負載</strong></td>
+                        <td>高 (CPU/記憶體壓力較大)</td>
+                        <td>極低 (幾何引擎運算量最小化)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <footer>
+            <p class="attribution">此工具由虎門科技資深技術工程師Jeff Hong洪敬傑提供</p>
+        </footer>
+    </div>
+
+</body>
+</html>
